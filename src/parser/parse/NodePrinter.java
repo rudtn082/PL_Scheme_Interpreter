@@ -31,7 +31,7 @@ public class NodePrinter {
 	private void printNode(QuoteNode quoteNode) {
 		if (quoteNode.nodeInside() == null)
 			return;
-		ps.print("`");
+		ps.print("` ");
 		printNode(quoteNode.nodeInside());
 	}
 
@@ -47,6 +47,8 @@ public class NodePrinter {
 		} else if (node instanceof BooleanNode) {
 			if(node == BooleanNode.FALSE_NODE) ps.print("#F");
 			else ps.print("#T");
+		} else if (node instanceof FunctionNode) {
+			ps.print(node.toString());
 		}
 		else {
 			String temp = node.toString();

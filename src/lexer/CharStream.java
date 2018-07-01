@@ -7,14 +7,11 @@ import java.io.IOException;
 import java.io.Reader;
 
 class CharStream {
-	private final Reader reader;
+	private String reader;
 	private Character cache;
+	private int temp = 0;
 	
-	static CharStream from(File file) throws FileNotFoundException {
-		return new CharStream(new FileReader(file));
-	}
-	
-	CharStream(Reader reader) {
+	CharStream(String reader) {
 		this.reader = reader;
 		this.cache = null;
 	}
@@ -28,15 +25,17 @@ class CharStream {
 		}
 		else {
 			try {
-				int ch = reader.read();
-				if ( ch == -1 ) {
+				if ( temp > reader.length()-1 ) {
+					temp = 0;
 					return Char.end();
 				}
 				else {
+					int ch = reader.charAt(temp);
+					temp++;
 					return Char.of((char)ch);
 				}
 			}
-			catch ( IOException e ) {
+			catch ( Exception e ) {
 				throw new ScannerException("" + e);
 			}
 		}

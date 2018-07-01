@@ -10,13 +10,8 @@ public class CuteParser {
 	private Iterator<Token> tokens;
 	private static Node END_OF_LIST = new Node(){}; // 새로 추가된 부분
 	
-	public CuteParser(File file) {
-		try {
-			tokens = Scanner.scan(file);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public CuteParser(String st) {
+		tokens = Scanner.scan(st);	
 	}
 
 	private Token getNextToken() {
