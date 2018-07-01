@@ -1,10 +1,14 @@
 package parser.ast;
 
-public class IntNode extends Node {
-	public int value;
-	
+public class IntNode implements ValueNode {
+// 새로 수정된 IntNode
+	private Integer value;
+
 	@Override
 	public String toString(){
-		return "INT: " + Integer.toString(value);
+		return "INT: " + value;
+	}
+	public IntNode(String text) {
+		this.value = new Integer(text);
 	}
 }

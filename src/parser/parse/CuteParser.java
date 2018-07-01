@@ -3,20 +3,13 @@ package parser.parse;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
-
-import lexer.Scanner;
-import lexer.Token;
-import lexer.TokenType;
-import parser.ast.BinarayOpNode;
-import parser.ast.BooleanNode;
-import parser.ast.FunctionNode;
-import parser.ast.IdNode;
-import parser.ast.IntNode;
-import parser.ast.ListNode;
-import parser.ast.Node;
+import lexer.*;
+import parser.ast.*;
 
 public class CuteParser {
 	private Iterator<Token> tokens;
+	private static Node END_OF_LIST = new Node(){}; // 새로 추가된 부분
+	
 	public CuteParser(File file) {
 		try {
 			tokens = Scanner.scan(file);
@@ -44,15 +37,13 @@ public class CuteParser {
 		
 		switch (tType) {
 			case ID:
-				IdNode idNode = new IdNode();
-				idNode.value = tLexeme;
+				IdNode idNode = new IdNode(tLexeme);
 				return idNode;
 				
 			case INT:
-				IntNode intNode = new IntNode();
+				IntNode intNode = new IntNode(tLexeme);
 				if (tLexeme == null)
 				System.out.println("???");
-				intNode.value = new Integer(tLexeme);
 				return intNode;
 				
 			// BinaryOpNode +, -, /, *가 해당
@@ -84,36 +75,32 @@ public class CuteParser {
 				
 			// BooleanNode
 			case FALSE:
-				BooleanNode falseNode = new BooleanNode();
-				falseNode.value = false;
-				return falseNode;
-				
+				return BooleanNode.FALSE_NODE;
 			case TRUE:
-				BooleanNode trueNode = new BooleanNode();
-				trueNode.value = true;
-				return trueNode;
-			// case L_PAREN일 경우와 case R_PAREN일 경우
-			// L_PAREN일 경우 parseExprList()를 호출하여 처리
+				return BooleanNode.TRUE_NODE;
 			case L_PAREN:
-				ListNode listNode = new ListNode();
-				listNode.value = parseExprList();
-				return listNode;
+				return parseExprList();
 			case R_PAREN:
-				return null;
+				return END_OF_LIST ;
+			case APOSTROPHE:
+				return new QuoteNode(parseExpr());
+			case QUOTE:
+				return new QuoteNode(parseExpr());
+				
 			default:
 				// head의 next를 만들고 head를 반환하도록 작성
 				System.out.println("Parsing Error!");
 				return null;
 			}
 	}
-
-	// List의 value를 생성하는 메소드
-	private Node parseExprList() {
+	
+	private ListNode parseExprList() {
 		Node head = parseExpr();
-		// head의 next 노드를 set하시오.
-		if (head == null) // if next token is RPAREN
+		if (head == null)
 		return null;
-		head.setNext(parseExprList());
-		return head;
-	}
+		if (head == END_OF_LIST) // if next token is RPAREN
+		return ListNode.ENDLIST;
+		ListNode tail = parseExprList(); if (tail == null) return null;
+		return ListNode.cons(head, tail);
+		}
 }

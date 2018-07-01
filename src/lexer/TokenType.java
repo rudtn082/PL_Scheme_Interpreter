@@ -8,7 +8,7 @@ public enum TokenType {
 	L_PAREN, R_PAREN,
 	DEFINE, LAMBDA, COND, QUOTE,
 	CAR, CDR, CONS,
-	ATOM_Q, NULL_Q, EQ_Q;
+	ATOM_Q, NULL_Q, EQ_Q, APOSTROPHE;
 
 	static TokenType fromSpecialCharactor(char ch) {
 		switch ( ch ) {

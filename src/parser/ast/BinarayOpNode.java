@@ -5,7 +5,7 @@ import java.util.Map;
 
 import lexer.TokenType;
 
-public class BinarayOpNode extends Node{
+public class BinarayOpNode implements Node{
 	enum BinType {
 		MINUS { TokenType tokenType() {return TokenType.MINUS;} },
 		PLUS { TokenType tokenType() {return TokenType.PLUS;} },
