@@ -50,7 +50,7 @@ class Char {
 			case '>': 
 			case '<': 
 			case '=': 
-			case '\'': 
+			case '`': 
 			case '?': 
 			case '#': 
  				return CharacterType.SPECIAL_CHAR;

@@ -54,7 +54,7 @@ public class CuteParser {
 			case PLUS:
 			case TIMES:
 			case LT:
-				BinarayOpNode binarayNode = new BinarayOpNode();
+				BinaryOpNode binarayNode = new BinaryOpNode();
 				binarayNode.setValue(tType);
 				return binarayNode;
 				

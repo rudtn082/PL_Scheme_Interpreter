@@ -1,10 +1,10 @@
 package parser.parse;
-
 import java.io.PrintStream;
-import parser.ast.*;
+import java.util.StringTokenizer;
 
+import parser.ast.*;
 public class NodePrinter {
-	PrintStream ps;
+	private PrintStream ps;
 	
 	public static NodePrinter getPrinter(PrintStream ps) {
 		return new NodePrinter(ps);
@@ -13,59 +13,50 @@ public class NodePrinter {
 	private NodePrinter(PrintStream ps) {
 		this.ps = ps;
 	}
-	
-	// ListNode, QuoteNode, Node에 대한 printNode 함수를 각각 overload 형식으로 작성
 	private void printNode(ListNode listNode) {
-		if (listNode == ListNode.EMPTYLIST) {
-			ps.print("( ) ");
+		if (listNode.equals(ListNode.EMPTYLIST)) {
+			ps.print("( )");
 			return;
 		}
-			
-		if (listNode == ListNode.ENDLIST) {
+		if (listNode.equals(ListNode.ENDLIST)) {
 			return;
 		}
-			
-		ps.print("( ");
 		printNode(listNode.car());
+		if(listNode.cdr().equals(ListNode.EMPTYLIST)) {
+			ps.print(" ");
+		}
 		printNode(listNode.cdr());
-		ps.print(" )");
 	}
 	
 	private void printNode(QuoteNode quoteNode) {
-		if (quoteNode.nodeInside() == null) {
+		if (quoteNode.nodeInside() == null)
 			return;
-		}
-		ps.print("\'");
-		if(quoteNode.nodeInside() instanceof IdNode) {
-			ps.print(quoteNode);
-			
-		}
-		else {
-			ListNode listnode = (ListNode)quoteNode.nodeInside();
-			ps.print("( ");
-			printNode(listnode.car());
-			printNode(listnode.cdr());
-			ps.print(" )");
-		}
+		ps.print("`");
+		printNode(quoteNode.nodeInside());
 	}
+
 	private void printNode(Node node) {
 		if (node == null)
 			return;
 		if (node instanceof ListNode) {
-			ListNode listnode = (ListNode)node;
-			printNode(listnode);
+			ps.print("(");
+			printNode((ListNode)node);
+			ps.print(" )");
+		} else if (node instanceof QuoteNode) {
+			printNode((QuoteNode)node);
+		} else if (node instanceof BooleanNode) {
+			if(node == BooleanNode.FALSE_NODE) ps.print("#F");
+			else ps.print("#T");
 		}
-		else if (node instanceof QuoteNode){
-			QuoteNode quoteNode = (QuoteNode)node;
-			printNode(quoteNode);
-		}
-		
 		else {
-			ps.print("[" + node + "] ");
+			String temp = node.toString();
+			StringTokenizer st = new StringTokenizer(temp, " ");
+			st.nextToken();
+			ps.print(" " + st.nextToken());
 		}
 	}
-	
+			
 	public void prettyPrint(Node node){
 		printNode(node);
-	}
+	}	
 }

@@ -2,7 +2,7 @@ package parser.ast;
 
 public class IntNode implements ValueNode {
 // 새로 수정된 IntNode
-	private Integer value;
+	public Integer value;
 
 	@Override
 	public String toString(){

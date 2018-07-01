@@ -12,6 +12,8 @@ public enum TokenType {
 
 	static TokenType fromSpecialCharactor(char ch) {
 		switch ( ch ) {
+		case '`':
+			return APOSTROPHE;
 		case 40:
 			return L_PAREN;
 		case 41:

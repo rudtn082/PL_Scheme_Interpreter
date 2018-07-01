@@ -6,7 +6,7 @@ import java.util.Map;
 import lexer.TokenType;
 
 public class FunctionNode implements Node{ //binaryOpNode클래스를 보고 참고해서 작성
-	enum FunctionType {
+	public enum FunctionType {
 		ATOM_Q { TokenType tokenType() {return TokenType.ATOM_Q;} },
 		CAR { TokenType tokenType() {return TokenType.CAR;} },
 		CDR { TokenType tokenType() {return TokenType.CDR;} },
