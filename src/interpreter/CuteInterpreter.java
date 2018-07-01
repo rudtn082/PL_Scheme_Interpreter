@@ -28,7 +28,10 @@ public class CuteInterpreter {
 				System.out.println("insertTable success");
 			}
 			else if (((ListNode)value.car()).car() instanceof FunctionNode) {
-				hm.put(id.toString(), runFunction((FunctionNode)((ListNode)value.car()).car(), ((ListNode)value.car()).cdr()));
+				if (((FunctionNode)((ListNode)value.car()).car()).value.equals(FunctionNode.FunctionType.LAMBDA)) { // 만약에 람다일 경우(전역함수 구현)
+					hm.put(id.toString(), value);
+				}
+				else hm.put(id.toString(), runFunction((FunctionNode)((ListNode)value.car()).car(), ((ListNode)value.car()).cdr()));
 				System.out.println("insertTable success");
 			}
 		}
@@ -82,6 +85,23 @@ public class CuteInterpreter {
 		}
 		else if(list.car() instanceof BinaryOpNode){ // BinaryOpNode일 경우
 			return runBinary(list);
+		}
+		else if(list.car() instanceof IdNode){ // 전역 함수 일 경우는 IdNdode이다.
+			if(hm.get(list.car().toString()) != null) { // 변수인 경우 바꿔준다.
+				ListNode stemp = (ListNode)hm.get(list.car().toString());
+				
+				hm.put(((ListNode)((ListNode)stemp.car()).cdr().car()).car().toString(), list.cdr().car());
+				Node temp_node = runFunction((FunctionNode)(((ListNode)stemp.car()).car()), ((ListNode)stemp.car()).cdr()); // 람다의 경우 runFunction 진행
+				hm.remove(((ListNode)((ListNode)stemp.car()).cdr().car()).car().toString());
+				return temp_node;
+				
+			}
+		}
+		else if(((ListNode)list.car()).car() instanceof FunctionNode) { // 람다일 경우
+			hm.put(((ListNode)((ListNode)list.car()).cdr().car()).car().toString(), list.cdr().car());
+			Node temp_node = runFunction((FunctionNode)(((ListNode)list.car()).car()), ((ListNode)list.car()).cdr()); // 람다의 경우 runFunction 진행
+			hm.remove(((ListNode)((ListNode)list.car()).cdr().car()).car().toString());
+			return temp_node;
 		}
 		return list;
 	}
@@ -347,10 +367,26 @@ public class CuteInterpreter {
 			case DEFINE:
 				if(operand.car() instanceof IdNode) {
 					insertTable((IdNode)operand.car(), operand.cdr());
+					return null;
 				}
 				else {
 		        	errorLog("runFunction(DEFINE) error");
 			        return null;
+				}
+			case LAMBDA:
+				if(operand.car() == null || operand.cdr() == null) { // 바인딩 할 변수 또는 함수가 없으면 에러
+					errorLog("runFunction(LAMBDA) error");
+			        return null;
+				}
+				else {
+					if(((ListNode)operand.cdr().car()).car() instanceof FunctionNode) { // 함수가 function일 경우
+						return runFunction((FunctionNode)((ListNode)operand.cdr().car()).car(), ((ListNode)operand.cdr().car()).cdr());
+					} else if(((ListNode)operand.cdr().car()).car() instanceof BinaryOpNode) { // 함수가 binary일 경우
+						return runBinary((ListNode)operand.cdr().car());
+					} else {
+						errorLog("runFunction(LAMBDA) error");
+				        return null;
+					}
 				}
 			default:
 				break;

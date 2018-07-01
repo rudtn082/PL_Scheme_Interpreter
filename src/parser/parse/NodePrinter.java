@@ -39,15 +39,17 @@ public class NodePrinter {
 		if (node == null)
 			return;
 		if (node instanceof ListNode) {
-			ps.print("(");
+			ps.print(" ( ");
 			printNode((ListNode)node);
-			ps.print(" )");
+			ps.print(" ) ");
 		} else if (node instanceof QuoteNode) {
 			printNode((QuoteNode)node);
 		} else if (node instanceof BooleanNode) {
 			if(node == BooleanNode.FALSE_NODE) ps.print("#F");
 			else ps.print("#T");
 		} else if (node instanceof FunctionNode) {
+			ps.print(node.toString());
+		} else if (node instanceof BinaryOpNode) {
 			ps.print(node.toString());
 		}
 		else {
