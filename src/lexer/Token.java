@@ -2,7 +2,6 @@ package lexer;
 
 import java.util.HashMap;
 import java.util.Map;
-import static lexer.TokenType.*;
 
 public class Token {
 	private final TokenType type;
@@ -12,13 +11,6 @@ public class Token {
 		TokenType type = KEYWORDS.get(lexme);
 			if ( type != null ) {
 				return new Token(type, lexme);
-			}
-			else if ( lexme.endsWith("?") ) {
-				if ( lexme.substring(0, lexme.length()-1).contains("?") ) {
-					throw new ScannerException("invalid ID=" + lexme);
-				}
-				
-				return new Token(TokenType.QUESTION, lexme);
 			}
 			else if( lexme.startsWith("#") ) { // 만약에 #으로 시작한 lexme일 경우에
 		         if( lexme.endsWith("T") ) { // T로 끝나면 
